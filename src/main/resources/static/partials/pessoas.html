@@ -1,0 +1,91 @@
+<div >
+	<div class="col">
+		<form class="col s12" ng-submit="submeter()" name="formPessoa">
+			<div class="col s10">
+				  <label>
+			        <input name="group1" ng-change="clear()" type="radio" checked ng-model="pessoa.type" value="FISICA"/>
+			        <span>Fisica</span>
+			      </label>
+			    <div style="min-height: 10px;"></div>
+			      <label>
+			        <input name="group1" ng-change="clear()" type="radio" ng-model="pessoa.type" value="JURIDICA"/>
+			        <span>Juridica</span>
+			      </label>
+			</div>
+			<div ng-show="isPessoaFisica()">
+				<!-- 	 PESSOA FISICA -->
+				<div class="row">
+					<div class="input-field col s5">
+						<input id="nome" type="text" maxlength="40" class="validate"
+							ng-model="pessoaFisica.nome"> <label for="nome">Nome</label>
+					</div>
+					<div class="input-field col s5">
+						<input id="cpf" maxlength="12" class="validate" type="text"
+							ng-model="pessoaFisica.cpf"> <label for="cpf"
+							data-error="Errado" data-success="ok">CPF</label>
+					</div>
+					<div class="input-field col s5">
+						 <input type="text" class="datepicker" class="data"
+							ng-model="pessoaFisica.dataNascimento"> <label for="data"
+							data-error="Errado" data-success="ok">Data Nascimento</label>
+					</div>
+				</div>
+			</div>
+			<div ng-show="isPessoaJuridica()">
+				<!-- 	 PESSOA JURIDICA -->
+				<div class="row">
+					<div class="input-field col s5">
+						<input id="cnpj" type="text" maxlength="20" class="validate"
+							ng-model="pessoaJuridica.cnpj"> <label for="cnpj">CNPJ</label>
+					</div>
+					<div class="input-field col s5">
+						<input id="nomeFantasia" maxlength="20" class="validate" type="text"
+							ng-model="pessoaJuridica.nomeFantasia"> <label for="nomeFantasia"
+							data-error="Errado" data-success="ok">Nome Fantasia</label>
+					</div>
+					<div class="input-field col s10">
+						<input id="razaoSocial" maxlength="40" class="validate" type="text"
+							ng-model="pessoaJuridica.razaoSocial"> <label for="razaoSocial"
+							data-error="Errado" data-success="ok">Raz&amacr;o Social</label>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+					<button class="btn-floating btn-small waves-effect waves-light green"
+						type="submit" name="submit">
+						<i class="material-icons">add</i>
+					</button>
+					<a class="btn-floating btn-small waves-effect waves-light green"><i
+						class="material-icons" ng-click="clear()">replay</i></a>
+						<a class="btn-floating btn-small waves-effect waves-light green"><i
+							class="material-icons" ng-click="getPessoas()">search</i></a>
+				</div>
+		</form>
+	</div>
+	<div style="min-height: 30px;"></div>
+	<div class="col s10">
+		<table class="highlight">
+<!-- 			<thead> -->
+<!-- 				<tr> -->
+<!-- 					<th></th> -->
+<!-- 					<th></th> -->
+<!-- 					<th></th> -->
+<!-- 					<th></th> -->
+<!-- 				</tr> -->
+<!-- 			</thead> -->
+			<tbody>
+				<tr ng-model="rows" ng-repeat="row in rows track by $index" ng-click="select(row.id)">
+					<td>{{ row.first  }}</td>
+					<td>{{ row.second }}</td>
+					<td>{{ row.third  }}</td>
+					<td> 
+						<a class="btn-floating left btn-small waves-effect waves-light green"><i class="material-icons" ng-click="delete(row.id)">delete_forever</i></a>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+
+	</div>
+
+
+</div>
