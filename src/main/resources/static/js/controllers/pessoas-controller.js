@@ -1,6 +1,4 @@
-var app = angular.module('pauloApp');
-
-app.controller('PessoasController', function($scope, $http, $routeParams,$filter) {
+angular.module('pauloApp').controller('PessoasController', function($scope, $http, $routeParams,$filter) {
 
 	var url = '/pessoa';
 	var tipoPessoaFisica = "FISICA";
@@ -8,13 +6,11 @@ app.controller('PessoasController', function($scope, $http, $routeParams,$filter
 
 	$scope.rows = [];
 	$scope.pessoas = [];
+	$scope.tipo = tipoPessoaFisica;
+	$scope.pessoa = {};
 	
-	$scope.pessoa = {
-		type : tipoPessoaFisica
-	};
-
 	$scope.isPessoaFisica = function() {
-		return $scope.pessoa.type == tipoPessoaFisica;
+		return $scope.tipo == tipoPessoaFisica;
 	}
 
 	$scope.isPessoaJuridica = function() {
@@ -24,7 +20,6 @@ app.controller('PessoasController', function($scope, $http, $routeParams,$filter
 	$scope.clear = function() {
 		$scope.pessoaFisica = {};
 		$scope.pessoaJuridica = {};
-		console.log($scope.pessoaFisica)
 	}
 
 	function buiderPessoa() {
@@ -34,7 +29,7 @@ app.controller('PessoasController', function($scope, $http, $routeParams,$filter
 		} else {
 			pessoa = $scope.pessoaJuridica;
 		}
-		pessoa.type = $scope.pessoa.type;
+		pessoa.type = $scope.tipo;
 		return pessoa;
 	}
 
@@ -52,8 +47,9 @@ app.controller('PessoasController', function($scope, $http, $routeParams,$filter
 		$http.patch(url, pessoa)
 			.success(function (data) {
 				$scope.clear();
+				filterPessoas(data.id);
 				$scope.pessoas.push(data);
-				builderRow(data);
+				builderRows();
 				$scope.mensagem = 'Cadastrado com sucesso';
 			}).error(function (erro) {
 				console.log(erro);
@@ -76,9 +72,7 @@ app.controller('PessoasController', function($scope, $http, $routeParams,$filter
 	$scope.delete = function (id) {
 		$http.delete(url.concat("/").concat(id))
 			.success(function (data) {
-				$scope.pessoas = $scope.pessoas.filter(function (el) {
-					return (el.id != data);
-				});
+				filterPessoas(data);
 				builderRows();
 			})
 			.error(function (erro) {
@@ -87,6 +81,11 @@ app.controller('PessoasController', function($scope, $http, $routeParams,$filter
 		});
 	};
 	
+	function filterPessoas(pessoaId) {
+		$scope.pessoas = $scope.pessoas.filter(function (el) {
+			return (el.id != pessoaId);
+		});
+	}
 	
 	$scope.getPessoas = function() {
 		$http.get(url)
@@ -114,7 +113,7 @@ app.controller('PessoasController', function($scope, $http, $routeParams,$filter
 			row.id = data.id;
 			row.first = data.nome;
 			row.second = data.cpf;
-			row.third = $filter('date')(new Date(data.dataNascimento), "dd/MM/yyyy")	;
+			row.third = $filter('date')(data.dataNascimento, "dd/MM/yyyy")	;
 		} else {
 			row.id = data.id;
 			row.first = data.razaoSocial;
@@ -126,18 +125,16 @@ app.controller('PessoasController', function($scope, $http, $routeParams,$filter
 	}
 	
 	$scope.select = function(id){
-		console.log(id);
-	}
-
-	$scope.select = function(id){
 		let selected = $scope.pessoas.filter(function (el) {
 			return (el.id == id);
 		});
 		let pessoa = selected[0];
 		if(pessoa){
-			$scope.pessoa.type = pessoa.type;
-			if($scope.isPessoaFisica())
+			$scope.tipo = pessoa.type;
+			if($scope.isPessoaFisica()){
 				$scope.pessoaFisica = pessoa;
+				$scope.pessoaFisica.dataNascimento = new Date(pessoa.dataNascimento);
+			}	
 			else
 				$scope.pessoaJuridica = pessoa;
 		}
